@@ -18,24 +18,24 @@ let findVisibleSelectionLines = (editor: vscode.TextEditor) => {
     return selectionLines;
 };
 
-let foldSelection = ({ 'levels': levels = 1, 'direction': direction = 'down' } = {}) => {
+let foldSelection = (args: {'levels'?: number, 'direction'?: string} = {}) => {
     let editor = vscode.window.activeTextEditor;
     if (editor === undefined) {
         return;
     }
 
     let selectionLines = findVisibleSelectionLines(editor);
-    return vscode.commands.executeCommand('editor.fold', { 'levels': levels, 'direction': direction, 'selectionLines': selectionLines });
+    return vscode.commands.executeCommand('editor.fold', Object.assign(args, { 'selectionLines': selectionLines }));
 };
 
-let unfoldSelection = ({ 'levels': levels = 1, 'direction': direction = 'down' } = {}) => {
+let unfoldSelection = (args: {'levels'?: number, 'direction'?: string} = {}) => {
     let editor = vscode.window.activeTextEditor;
     if (editor === undefined) {
         return;
     }
 
     let selectionLines = findVisibleSelectionLines(editor);
-    return vscode.commands.executeCommand('editor.unfold', { 'levels': levels, 'direction': direction, 'selectionLines': selectionLines });
+    return vscode.commands.executeCommand('editor.unfold', Object.assign(args, { 'selectionLines': selectionLines }));
 };
 
 export function activate(context: vscode.ExtensionContext) {
