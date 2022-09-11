@@ -1,26 +1,46 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+let findVisibleSelectionLines = (editor: vscode.TextEditor) => {
+    let selectionLines: number[] = [];
+    for (let selection of editor.selections) {
+        for (let line = selection.start.line; line <= selection.end.line; line++) {
+            if (selectionLines.includes(line)) {
+                continue;
+            }
+            let pos = new vscode.Position(line, 0);
+            if (editor.visibleRanges.some(range => range.contains(pos))) {
+                selectionLines.push(line);
+            }
+        }
+    }
+
+    selectionLines.sort((a, b) => a - b);
+    return selectionLines;
+};
+
+let foldSelection = ({ 'levels': levels = 1, 'direction': direction = 'down' } = {}) => {
+    let editor = vscode.window.activeTextEditor;
+    if (editor === undefined) {
+        return;
+    }
+
+    let selectionLines = findVisibleSelectionLines(editor);
+    return vscode.commands.executeCommand('editor.fold', { 'levels': levels, 'direction': direction, 'selectionLines': selectionLines });
+};
+
+let unfoldSelection = ({ 'levels': levels = 1, 'direction': direction = 'down' } = {}) => {
+    let editor = vscode.window.activeTextEditor;
+    if (editor === undefined) {
+        return;
+    }
+
+    let selectionLines = findVisibleSelectionLines(editor);
+    return vscode.commands.executeCommand('editor.unfold', { 'levels': levels, 'direction': direction, 'selectionLines': selectionLines });
+};
+
 export function activate(context: vscode.ExtensionContext) {
-	
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "unfoldselection" is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('unfoldselection.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from UnfoldSelection!');
-	});
-
-	context.subscriptions.push(disposable);
+    context.subscriptions.push(vscode.commands.registerCommand('unfoldselection.foldSelection', foldSelection));
+    context.subscriptions.push(vscode.commands.registerCommand('unfoldselection.unfoldSelection', unfoldSelection));
 }
 
-// this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }

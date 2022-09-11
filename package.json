@@ -10,14 +10,19 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:unfoldselection.helloWorld"
+    "onCommand:unfoldselection.foldSelection",
+    "onCommand:unfoldselection.unfoldSelection"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "unfoldselection.helloWorld",
-        "title": "Hello World"
+        "command": "unfoldselection.foldSelection",
+        "title": "Fold Selection"
+      },
+      {
+        "command": "unfoldselection.unfoldSelection",
+        "title": "Unfold Selection"
       }
     ]
   },
