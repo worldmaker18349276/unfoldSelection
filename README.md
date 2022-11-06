@@ -10,6 +10,10 @@ Invisible lines cannot be folded/unfolded.
 
 ## Release Notes
 
+## 0.0.2
+
+Just a little refactoring.
+
 ### 0.0.1
 
 Initial release.
